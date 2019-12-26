@@ -23,7 +23,7 @@ export class Markov {
   constructor(stateSize: number = 2, markovPath: string) {
     this.stateSize = stateSize;
     this.markovPath = markovPath;
-    this.chain = new Chain(this.tokens, this.stateSize);
+    this.chain = new Chain(this.stateSize);
 
     // Init Markov file
     if (!fs.existsSync(this.markovPath)) {
@@ -87,6 +87,35 @@ export class Markov {
 
   public save() {
     this.chain.saveModel(this.markovPath);
+  }
+
+  public replaceWord(currentWord: string, replaceWord: string) {
+    this.chain.replaceWord(normalize(currentWord), normalize(replaceWord));
+  }
+
+  public getWords() {
+    return this.chain.getWords();
+  }
+
+  public getSpellCheck() {
+    const words = this.getWords();
+    const spellCheck = new natural.Spellcheck(words);
+
+    const res = {};
+
+    words.forEach((word) => {
+      const corrections = spellCheck.getCorrections(word, 1);
+
+      // Possible output: table: [ 'table' ]
+      const wordIndex = corrections.indexOf(word);
+      const sameCorrection = corrections.length === 1 && wordIndex === 0;
+
+      if (corrections.length > 0 && corrections.length < 4 && !sameCorrection) {
+        res[word] = corrections.filter(w => w !== word);
+      }
+    });
+
+    return res;
   }
 
   private rejoinedText() {
