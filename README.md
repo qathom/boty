@@ -62,7 +62,17 @@ curl -F "url=https://xxx.execute-api.eu-west-3.amazonaws.com/prod/webhook" https
 
 ### Server
 
-The below commands allow you to zip the project, upload the project to your server and run it:
+You can use the `deploy.sh` script to deploy the bot on your server.
+It generates a zip file, uploads the project to your server (boty folder) and install dependencies:
+
+```bash
+chmod +x ./bin/deploy.sh
+
+# Usage
+./bin/deploy.sh -k key.pem -h xxx@ec2-xxxxx.eu-west-3.compute.amazonaws.com -r no
+```
+
+Alternatively, you can follow the below guide:
 
 ```bash
 # Zip project
