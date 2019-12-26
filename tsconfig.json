@@ -10,7 +10,7 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
+    "target": "es2017",
     "typeRoots": [
       "node_modules/@types",
       "./types"
@@ -20,10 +20,18 @@
       "@/*": ["./src/*"]
     },
     "lib": [
-      "es2016",
-      "dom"
+      "es2017"
     ],
     "module": "commonjs",
     "baseUrl": "./"
-  }
+  },
+  "include": [
+    "start.ts",
+    "lambda.ts",
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "types/*"
+  ]
 }
