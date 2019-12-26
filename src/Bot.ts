@@ -56,7 +56,7 @@ export class Bot {
     const user = context.message.from.username;
 
     // Ignore links
-    if (/^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}/g.test(inputMessage)) {
+    if (/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}/g.test(inputMessage)) {
       return;
     }
 
