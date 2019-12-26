@@ -2,7 +2,7 @@
   "name": "boty",
   "version": "1.0.0",
   "description": "Expressive mad Telegram bot for your Telegram group chats",
-  "main": "run.ts",
+  "main": "start.ts",
   "scripts": {
     "start:dev": "ts-node start",
     "start": "node dist/run/js",
@@ -13,6 +13,7 @@
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
     "@types/node": "^13.1.0",
+    "ts-node": "^8.5.4",
     "tslint": "^5.20.1",
     "tslint-config-airbnb-base": "^0.3.0",
     "typescript": "^3.7.4"
