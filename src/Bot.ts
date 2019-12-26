@@ -173,7 +173,7 @@ export class Bot {
         this.storeConfig.setNicknames(groupId, nicknames);
         this.storeConfig.save();
 
-        ctx.reply('New nickname saved!');
+        ctx.reply('New nicknames saved!');
       } catch (e) {
         console.error(e);
         ctx.reply('Invalid nicknames');
@@ -218,6 +218,56 @@ export class Bot {
       } catch (e) {
         console.error(e);
         ctx.reply('Oups! Something went wrong while saving the new response rate');
+      }
+    });
+
+    this.telegraf.command('spellcheck', (ctx) => {
+      try {
+        const corrections = this.markov.getSpellCheck();
+        const words = Object.keys(corrections);
+
+        // Sort words
+        words.sort();
+
+        const output = words
+          .reduce((out, word) => `${out}${word}: ${corrections[word].join(',')}\n`, '');
+        ctx.reply(`Possible corrections (For ${words.length} words):\n\n${output}`);
+      } catch (e) {
+        console.error(e);
+        ctx.reply('Oups! Something went wrong');
+      }
+    });
+
+    this.telegraf.command('count_words', (ctx) => {
+      try {
+        const uniqueWords = this.markov.getWords();
+        ctx.reply(`Total unique words: ${uniqueWords.length}`);
+      } catch (e) {
+        console.error(e);
+        ctx.reply('Oups! Something went wrong');
+      }
+    });
+
+    this.telegraf.command('replace_word', (ctx) => {
+      try {
+        const args = ctx.message.text
+          .replace(/\/replace_word/, '')
+          .trim();
+        const match = args.match(/^([\w]+) ([\w]+)/g);
+
+        if (!match || match.length !== 1) {
+          throw new Error('Invalid arguments');
+        }
+
+        const [currentWord, replaceWord] = match[0].split(' ');
+
+        this.markov.replaceWord(currentWord, replaceWord);
+        this.markov.save();
+
+        ctx.reply(`Word "${currentWord}" has been replaced by "${replaceWord}"`);
+      } catch (e) {
+        console.error(e);
+        ctx.reply('Oups! Something went wrong');
       }
     });
   }
