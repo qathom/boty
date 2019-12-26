@@ -90,7 +90,8 @@ export class Markov {
   }
 
   public replaceWord(currentWord: string, replaceWord: string) {
-    this.chain.replaceWord(normalize(currentWord), normalize(replaceWord));
+    // Do not normalize current word
+    this.chain.replaceWord(currentWord, normalize(replaceWord));
   }
 
   public getWords() {
