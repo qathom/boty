@@ -31,7 +31,9 @@ export class Bot {
     this.markov.load();
 
     // Set bot
-    this.telegraf = new Telegraf(this.options.token);
+    this.telegraf = new Telegraf(this.options.token, {
+      username: 'boty', // Bot username
+    });
   }
 
   private parseMessage(message: string): ParsedMessage {
