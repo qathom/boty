@@ -20,3 +20,11 @@ export type ParsedMessage = {
   message: string;
   hasSentences: boolean;
 };
+
+export type ChainSchema = {
+  // N-Gram as a key
+  [key: string]: {
+    // Unique word and frequency
+    [key: string]: number,
+  },
+};
