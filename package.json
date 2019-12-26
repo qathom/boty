@@ -5,12 +5,15 @@
   "main": "start.ts",
   "scripts": {
     "start:dev": "ts-node start",
-    "start": "node dist/run/js",
-    "build": "tsc"
+    "start": "node dist/start.js",
+    "build": "tsc",
+    "deploy:serverless": "serverless deploy -v --stage prod",
+    "undeploy:serverless": "serverless remove --stage prod"
   },
   "author": "Anthony Meizoso",
   "license": "MIT",
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.39",
     "@types/dotenv": "^8.2.0",
     "@types/node": "^13.1.0",
     "ts-node": "^8.5.4",
