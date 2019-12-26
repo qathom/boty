@@ -1,7 +1,7 @@
 export function normalize(token: string): string {
   return token
     .toLowerCase()
-    .replace(/\/|"|\.|\,|\?|\(|\)|!|:|;|\.{2,5}/g, '')
+    .replace(/\/|"|’|\.|\,|\?|\(|\)|!|:|;|\.{2,5}/g, '')
 
     // Accents, diacritics
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
