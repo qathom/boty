@@ -1,0 +1,18 @@
+service: boty
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'prod'}
+  region: eu-west-3
+  environment:
+    TELEGRAM_TOKEN: ${env:TELEGRAM_TOKEN}
+functions:
+  webhook:
+    handler: dist/lambda.webhook
+    name: boty-${self:provider.stage}-webhook
+    events:
+      - http:
+          path: webhook
+          method: post
+          cors: true
+    timeout: 30
