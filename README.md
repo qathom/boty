@@ -44,3 +44,55 @@ Run below commands in a Telegram group:
 # Removes the bot from the group
 /bye
 ```
+
+## Deployment
+
+### Serverless
+
+```bash
+# Install serverless
+npm i -g serverless
+
+# Deploy
+npm run deploy:serverless
+
+# Set the webhook
+curl -F "url=https://xxx.execute-api.eu-west-3.amazonaws.com/prod/webhook" https://api.telegram.org/bot<TOKEN>/setWebhook
+```
+
+### Server
+
+The below commands allow you to zip the project, upload the project to your server and run it:
+
+```bash
+# Zip project
+zip -r boty.zip package.json src/ data/ start.ts tsconfig.json tslint.json types/ .env
+
+# Upload via SSH
+scp -i key.pem boty.zip user@ec2-xxx.eu-west-3.compute.amazonaws.com:
+
+# Remove local zip
+rm boty.zip
+
+# SSH login
+ssh -i key.pem ec2-user@xxx.eu-west-3.compute.amazonaws.com
+
+# Unzip
+unzip boty.zip -d boty
+
+# Install dependencies
+cd boty
+npm install
+
+# Generate dist (production ready files) files
+npm run build
+
+# Run with pm2
+pm2 start dist/start.js --name boty
+
+# For automatically running PM2 when the server restarts, issue the following command
+pm2 startup
+
+# Save all the currently running processes so that they can be run again
+# whenever PM2 restarts either manually or by a script with the following command
+pm2 save
