@@ -41,6 +41,15 @@ Run below commands in a Telegram group:
 # Retrieve the current response rate
 /get_response_rate
 
+# Spell check: see possible errors and suggested corrections
+/spellcheck
+
+# Replace wrong written words
+/replace_word wrongWord correctWord
+
+# Retrieve the total of unique words
+/count_words
+
 # Removes the bot from the group
 /bye
 ```
