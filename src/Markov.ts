@@ -1,4 +1,5 @@
 import * as natural from 'natural';
+import * as fs from 'fs';
 import { Chain } from './Chain';
 import { normalize } from './utils';
 
@@ -23,6 +24,11 @@ export class Markov {
     this.stateSize = stateSize;
     this.markovPath = markovPath;
     this.chain = new Chain(this.tokens, this.stateSize);
+
+    // Init Markov file
+    if (!fs.existsSync(this.markovPath)) {
+      fs.writeFileSync(this.markovPath, JSON.stringify({}));
+    }
   }
 
   public index(corpus: string, nicknames?: string[][]) {
