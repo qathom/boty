@@ -15,3 +15,8 @@ export type BotOptions = {
   configPath: string;
   markovPath: string;
 };
+
+export type ParsedMessage = {
+  message: string;
+  hasSentences: boolean;
+};
