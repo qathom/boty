@@ -1,0 +1,26 @@
+{
+  "name": "boty",
+  "version": "1.0.0",
+  "description": "Expressive mad Telegram bot for your Telegram group chats",
+  "main": "run.ts",
+  "scripts": {
+    "start:dev": "ts-node start",
+    "start": "node dist/run/js",
+    "build": "tsc"
+  },
+  "author": "Anthony Meizoso",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/node": "^13.1.0",
+    "tslint": "^5.20.1",
+    "tslint-config-airbnb-base": "^0.3.0",
+    "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "natural": "^0.6.3",
+    "telegraf": "^3.34.1",
+    "telegraf-ratelimit": "^2.0.0"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./dist",
+    "sourceMap": false,
+    "declaration": false,
+    "allowUnusedLabels": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es6",
+    "typeRoots": [
+      "node_modules/@types",
+      "./types"
+    ],
+    "paths": {
+      "@@/*": ["./*"],
+      "@/*": ["./src/*"]
+    },
+    "lib": [
+      "es2016",
+      "dom"
+    ],
+    "module": "commonjs",
+    "baseUrl": "./"
+  }
+}
