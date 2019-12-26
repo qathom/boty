@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { ChainSchema } from '@@/types';
 
 // Tags
 const BEGIN = '__BEGIN__';
@@ -10,11 +11,11 @@ const END = '__END__';
  */
 export class Chain {
   private initialState: any[] = [];
-  private model: any = {};
+  private model: ChainSchema = {};
   private stateSize: number = 2;
-  private modelValid: boolean = false;
+  private validModel: boolean = false;
 
-  constructor(tokens: string[][], stateSize: number) {
+  constructor(stateSize: number) {
     this.stateSize = stateSize;
 
     [...Array(stateSize).keys()].forEach(() => {
@@ -24,11 +25,84 @@ export class Chain {
 
   public loadModel(filePath: string) {
     this.model = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    this.modelValid = true;
+    this.validModel = true;
   }
 
   public saveModel(filePath: string) {
     fs.writeFileSync(filePath, JSON.stringify(this.model));
+  }
+
+  public getWords(): string[] {
+    let words: string[] = [];
+
+    Object.keys(this.model).forEach((nGram: string) => {
+      const singleWords = Object.keys(this.model[nGram]);
+      words = [...words, ...singleWords];
+    });
+
+    return [...new Set(words)];
+  }
+
+  public replaceWord(currentWord: string, replaceWord: string) {
+    const previousNGrams: string[] = [];
+
+    Object.keys(this.model).forEach((nGram: string) => {
+      const tokens = nGram.split(' ');
+
+      if (tokens.indexOf(currentWord) > -1) {
+        previousNGrams.push(nGram);
+      }
+
+      if (tokens.indexOf(currentWord) === -1) {
+        // Inner search
+        if (Object.keys(this.model[nGram]).findIndex(w => w === currentWord) > -1) {
+          previousNGrams.push(nGram);
+        }
+      }
+    });
+
+    // Merge existing words in N-Grams
+    const newModel = { ...this.model };
+
+    previousNGrams.forEach((nGram) => {
+      const newKey = nGram.replace(currentWord, replaceWord);
+
+      if (!newModel[newKey]) {
+        newModel[newKey] = {};
+      }
+
+      // Merge existing next word
+      const mergeWordWords = Object
+        .keys(newModel[nGram]);
+
+      mergeWordWords.forEach((mergeWord) => {
+        if (mergeWord === replaceWord) {
+          return;
+        }
+
+        if (mergeWord === currentWord) {
+          const newStats: number = newModel[nGram][currentWord] + (newModel[newKey][replaceWord] || 0);
+          newModel[newKey][replaceWord] = newStats;
+          return;
+        }
+
+        const updateStats: number = newModel[nGram][mergeWord] + (newModel[newKey][mergeWord] || 0);
+        newModel[newKey][mergeWord] = updateStats;
+      });
+
+      // Word clean-up
+      if (nGram !== newKey) {
+        delete newModel[nGram];
+      }
+
+      if (currentWord in newModel[newKey]) {
+        delete newModel[nGram][currentWord];
+      }
+    });
+
+
+    // Update model
+    this.model = newModel;
   }
 
   public buildModel(tokens: string[][]) {
@@ -52,7 +126,7 @@ export class Chain {
       });
     });
 
-    this.modelValid = true;
+    this.validModel = true;
   }
 
   private tupleToString(tuple: string[]): string {
@@ -91,7 +165,7 @@ export class Chain {
    *
   **/
   public generate(topic?: string|null) {
-    if (!this.modelValid) {
+    if (!this.validModel) {
       throw new Error('Markov.Chain: the model is not valid! Make sure to call buildModel() or loadModel()');
     }
 
