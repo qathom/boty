@@ -56,9 +56,17 @@ export class Bot {
     const groupId: number = context.message.chat.id;
     const inputMessage = context.message.text;
     const user = context.message.from.username;
+    const ignoreRegex = [
+      // Links
+      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}/g,
+      // Commands
+      /^\//g,
+    ];
 
-    // Ignore links
-    if (/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}/g.test(inputMessage)) {
+    const ignoreFilters = ignoreRegex
+      .filter(regex => regex.test(inputMessage));
+
+    if (ignoreFilters.length > 0) {
       return;
     }
 
