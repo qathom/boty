@@ -7,6 +7,7 @@ import { normalize, getRandom } from './utils';
 import { BotOptions, ParsedMessage } from '@@/types';
 
 export class Bot {
+  private botName: string = 'Boty';
   private storeConfig: StoreConfig;
   private options: BotOptions;
   private markov: Markov;
@@ -32,7 +33,7 @@ export class Bot {
 
     // Set bot
     this.telegraf = new Telegraf(this.options.token, {
-      username: 'boty', // Bot username
+      username: this.botName, // Bot username
     });
   }
 
@@ -50,6 +51,24 @@ export class Bot {
     }
 
     return { message: output, hasSentences: containsSentences };
+  }
+
+  private replyWithSentence(context: any, user: string, groupId: number, message: string, nicknames: any) {
+    const topic = this.findTopic(message, nicknames);
+    const sentence = this.markov.makeSentence(topic, 1, 100) ||
+      this.markov.makeSentence(null, 1, 100);
+
+    if (!sentence) {
+      return;
+    }
+
+    this.storeConfig.resetMessagesReceived(groupId);
+    this.storeConfig.save();
+
+    // Answer back if "boty" is in the sentence
+    const finalSentence: string = sentence.replace(/boty/g, user);
+
+    context.reply(finalSentence);
   }
 
   private onMessage(context) {
@@ -83,7 +102,13 @@ export class Bot {
     this.markov.train();
     this.markov.save();
 
-    // Slow down the response rate if needed
+    // Reply directly if the bot name exists in the message
+    if (normalize(message).indexOf(normalize(this.botName)) > -1) {
+      this.replyWithSentence(context, user, groupId, message, nicknames);
+      return;
+    }
+
+    // Slow down the response rate
     const newValue = this.storeConfig.incrementMessagesReceived(groupId);
     const responseRate = this.storeConfig.getResponseRate(groupId);
 
@@ -92,21 +117,7 @@ export class Bot {
       return;
     }
 
-    const topic = this.findTopic(message, nicknames);
-    const sentence = this.markov.makeSentence(topic, 1, 100) ||
-      this.markov.makeSentence(null, 1, 100);
-
-    if (!sentence) {
-      return;
-    }
-
-    this.storeConfig.resetMessagesReceived(groupId);
-    this.storeConfig.save();
-
-    // Answer back if "boty" is in the sentence
-    const finalSentence: string = sentence.replace(/boty/g, user);
-
-    context.reply(finalSentence);
+    this.replyWithSentence(context, user, groupId, message, nicknames);
   }
 
   private findTopic(message: string, nicknames: string[][]): string|null {
