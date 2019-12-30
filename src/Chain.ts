@@ -135,7 +135,7 @@ export class Chain {
 
   private move(topic: string, state) {
     // Pick next word at random
-    const modelState = this.model[this.tupleToString(state)];
+    const modelState = this.model[this.tupleToString(state)] || {};
     const list: string[] = [];
 
     Object.keys(modelState).forEach((key) => {
